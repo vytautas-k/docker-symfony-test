@@ -1,0 +1,35 @@
+php:
+  build: docker/php
+  links:
+    - mysql
+    - rabbitmq
+  volumes:
+    - .:/var/www
+    - ./app/Resources/docker/init.sh:/init.sh
+    - ./var/session:/var/lib/php/session
+
+web:
+  image: datadoglt/nginx-sf
+  volumes:
+    - .:/var/www
+  ports:
+    - 8080:80
+  links:
+    - php
+
+mysql:
+  image: mysql
+  hostname: mysql
+  ports:
+    - 3307:3306
+  environment:
+    MYSQL_DATABASE: test123
+    MYSQL_USER: test123
+    MYSQL_PASSWORD: test123
+    MYSQL_ROOT_PASSWORD: mysecretpass
+
+rabbitmq:
+  image: rabbitmq
+  hostname: rabbitmq
+  ports:
+    - 5672
